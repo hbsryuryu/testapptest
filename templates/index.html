@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Form Submission</title>
+	</head>
+	<body>
+		<label for="usermail">Usermail:</label>
+		<input type="text" id="usermail" name="usermail" value="your_usermail@sample.com" /><br /><br />
+		<label for="password">Password:</label>
+		<input type="text" id="password" name="password" value="あああ" /><br /><br />
+		<button onclick="login()">ログイン</button>
+		<button onclick="logout()">ログアウト</button>
+		<br />
+		<br />
+		<button onclick="getUserProfile()">ユーザー情報取得</button>
+		<button onclick="accessProtectedRoute()">保護されたデータにアクセス</button>
+		<p>実行結果はブラウザのターミナルで確認</p>
+
+		<script>
+			// ログイン機能
+			async function login() {
+				const usermail = document.getElementById("usermail").value;
+				const password = document.getElementById("password").value;
+
+				const response = await fetch("http://localhost:5000/api/login", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ usermail, password }),
+					credentials: "include", // クッキーを含める
+				});
+
+				const data = await response.json();
+				if (response.ok) {
+					alert("Login successful!");
+				} else {
+					alert("Login failed: " + data.message);
+				}
+			}
+
+			// ログアウト機能
+			async function logout() {
+				const response = await fetch("http://localhost:5000/api/logout", {
+					method: "POST",
+					credentials: "include", // クッキーを含める
+				});
+
+				if (response.ok) {
+					alert("Logged out successfully!");
+				} else {
+					alert("Logout failed");
+				}
+			}
+
+			// 保護されたルートにアクセス
+			async function accessProtectedRoute() {
+				const response = await fetch("http://localhost:5000/api/protected", {
+					method: "GET",
+					credentials: "include", // クッキーを含める
+				});
+
+				if (response.ok) {
+					const data = await response.json(); //ここもprimiseでjsonの返り値を待ってる
+					console.log(data.message);
+				} else {
+					// console.error("Error: " + data.message);
+				}
+			}
+
+			// 保護されたルートにアクセス
+			async function getUserProfile() {
+				const response = await fetch("http://localhost:5000/api/profile", {
+					method: "GET",
+					credentials: "include", // クッキーを含める
+				});
+
+				if (response.ok) {
+					const data = await response.json(); //ここもprimiseでjsonの返り値を待ってる
+					console.log(data.usermail);
+				} else {
+					// console.log("Error: ");
+				}
+			}
+		</script>
+	</body>
+</html>
