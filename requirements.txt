@@ -4,5 +4,6 @@ flask-cors
 PyJWT
 flask-limiter
 stripe
+gunicorn
 cffi
 pymongo
